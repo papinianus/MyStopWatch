@@ -7,7 +7,8 @@ namespace MyStopWatch
 {
     public partial class MainForm : Form
     {
-        private MainModel Model { get; } = new ();
+        private MainModel Model { get; } = new();
+        private HistoryModel HistoryModel { get; } = new();
         public MainForm()
         {
 
@@ -77,6 +78,8 @@ namespace MyStopWatch
         {
             base.OnLoad(e);
             workListBindingSource.DataSource = Model.Works;
+            // Visibility reset by Binding, so re-set false
+            WorksGrid.Columns[0].Visible = false;
             Draw();
         }
 
@@ -119,6 +122,14 @@ namespace MyStopWatch
                     action.Invoke();
                 }
             };
+        }
+
+        private void WorksGridSaveButton_Click(object sender, EventArgs e)
+        {
+            Model.SaveWorks();
+
+            WorksGrid.Refresh();
+            WorkList.Refresh();
         }
     }
 }

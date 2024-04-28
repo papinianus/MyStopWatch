@@ -37,9 +37,15 @@
             TabContainer = new TabControl();
             StopWatchPage = new TabPage();
             HistoryPage = new TabPage();
+            WorksGridSaveButton = new Button();
+            WorksGrid = new DataGridView();
+            idDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            titleDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)workListBindingSource).BeginInit();
             TabContainer.SuspendLayout();
             StopWatchPage.SuspendLayout();
+            HistoryPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)WorksGrid).BeginInit();
             SuspendLayout();
             // 
             // StopWatchDisplay
@@ -121,6 +127,8 @@
             // 
             // HistoryPage
             // 
+            HistoryPage.Controls.Add(WorksGridSaveButton);
+            HistoryPage.Controls.Add(WorksGrid);
             HistoryPage.Location = new Point(4, 4);
             HistoryPage.Name = "HistoryPage";
             HistoryPage.Padding = new Padding(3);
@@ -128,6 +136,47 @@
             HistoryPage.TabIndex = 1;
             HistoryPage.Text = "History";
             HistoryPage.UseVisualStyleBackColor = true;
+            // 
+            // WorksGridSaveButton
+            // 
+            WorksGridSaveButton.Font = new Font("Yu Gothic UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 128);
+            WorksGridSaveButton.Location = new Point(1, 184);
+            WorksGridSaveButton.Margin = new Padding(0);
+            WorksGridSaveButton.Name = "WorksGridSaveButton";
+            WorksGridSaveButton.Size = new Size(52, 30);
+            WorksGridSaveButton.TabIndex = 1;
+            WorksGridSaveButton.Text = "保存";
+            WorksGridSaveButton.UseVisualStyleBackColor = true;
+            WorksGridSaveButton.Click += WorksGridSaveButton_Click;
+            // 
+            // WorksGrid
+            // 
+            WorksGrid.AutoGenerateColumns = false;
+            WorksGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            WorksGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            WorksGrid.Columns.AddRange(new DataGridViewColumn[] { idDataGridViewTextBoxColumn, titleDataGridViewTextBoxColumn });
+            WorksGrid.DataSource = workListBindingSource;
+            WorksGrid.Location = new Point(1, 1);
+            WorksGrid.Name = "WorksGrid";
+            WorksGrid.ScrollBars = ScrollBars.Vertical;
+            WorksGrid.Size = new Size(204, 180);
+            WorksGrid.TabIndex = 0;
+            // 
+            // idDataGridViewTextBoxColumn
+            // 
+            idDataGridViewTextBoxColumn.DataPropertyName = "Id";
+            idDataGridViewTextBoxColumn.HeaderText = "Id";
+            idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
+            idDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+            idDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // titleDataGridViewTextBoxColumn
+            // 
+            titleDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            titleDataGridViewTextBoxColumn.DataPropertyName = "Title";
+            titleDataGridViewTextBoxColumn.HeaderText = "しゅくだい";
+            titleDataGridViewTextBoxColumn.Name = "titleDataGridViewTextBoxColumn";
+            titleDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
             // MainForm
             // 
@@ -141,6 +190,8 @@
             TabContainer.ResumeLayout(false);
             StopWatchPage.ResumeLayout(false);
             StopWatchPage.PerformLayout();
+            HistoryPage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)WorksGrid).EndInit();
             ResumeLayout(false);
         }
 
@@ -154,5 +205,9 @@
         private TabPage StopWatchPage;
         private TabPage HistoryPage;
         private BindingSource workListBindingSource;
+        private DataGridView WorksGrid;
+        private Button WorksGridSaveButton;
+        private DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn titleDataGridViewTextBoxColumn;
     }
 }

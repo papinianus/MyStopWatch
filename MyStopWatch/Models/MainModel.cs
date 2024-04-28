@@ -12,7 +12,7 @@ namespace MyStopWatch.Models
         private Timer Timer { get; } = new() { Interval = 10 };
         private MyStopWatchContext DbContext { get; set; }
         internal BindingList<Work> Works { get; private set; }
-        internal int CurrentWork { get; private set; } = -1;
+        internal int CurrentWork { get; private set; }
         internal void SetTimerEvent(EventHandler timerTrigger) => Timer.Tick += timerTrigger;
 
         internal int InitialSelection() => Works.FirstOrDefault(x => string.IsNullOrWhiteSpace(x.Title))?.Id ?? -1;
@@ -125,6 +125,18 @@ namespace MyStopWatch.Models
         {
             Timer.Dispose();
             DbContext.Dispose();
+        }
+
+        public void SaveWorks()
+        {
+            try
+            {
+                DbContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
     }
 
