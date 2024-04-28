@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Timer = System.Windows.Forms.Timer;
 
-namespace WinFormsApp1
+namespace MyStopWatch.Models
 {
     internal class MainModel
     {
@@ -14,7 +14,7 @@ namespace WinFormsApp1
         internal int CurrentWork { get; private set; } = -1;
         internal void SetTimerEvent(EventHandler timerTrigger) => Timer.Tick += timerTrigger;
 
-        internal int InitialIndex() => Works.FindIndex(x => x == string.Empty);
+        internal int InitialIndex() => Works.FindIndex(x => string.IsNullOrWhiteSpace(x));
 
         internal MainModel()
         {

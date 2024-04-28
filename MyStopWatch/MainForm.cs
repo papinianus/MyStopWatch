@@ -1,7 +1,11 @@
-namespace WinFormsApp1
+using Microsoft.EntityFrameworkCore;
+using MyStopWatch.Models;
+
+namespace MyStopWatch
 {
     public partial class MainForm : Form
     {
+        private MyStopWatchContext dbContext { get; set; }
         private MainModel Model { get; } = new MainModel();
         public MainForm()
         {
@@ -16,7 +20,6 @@ namespace WinFormsApp1
             MaximizeBox = false;
             MinimizeBox = false;
             MaximumSize = Size;
-
             Draw();
         }
 
@@ -56,6 +59,32 @@ namespace WinFormsApp1
             Model.Reset();
             Draw();
         }
+        private void WorkList_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if (comboBox == null)
+            {
+                return;
+            }
+            Model.SelectWork(comboBox.SelectedIndex);
+            Draw();
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            dbContext = new MyStopWatchContext();
+#if DEBUG
+            dbContext.Database.EnsureDeleted();
+#endif
+            dbContext.Database.Migrate();
+            var item = dbContext.Works.FirstOrDefault();
+            if (item == null)
+            {
+                dbContext.Works.Add(new Work { Title = "test" });
+                dbContext.SaveChanges();
+            }
+        }
 
         //https://sabine.hatenablog.com/entry/2012/07/24/001113
         /// <summary>
@@ -90,17 +119,6 @@ namespace WinFormsApp1
                     action.Invoke();
                 }
             };
-        }
-
-        private void WorkList_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            var comboBox = sender as ComboBox;
-            if (comboBox == null)
-            {
-                return;
-            }
-            Model.SelectWork(comboBox.SelectedIndex);
-            Draw();
         }
     }
 }
