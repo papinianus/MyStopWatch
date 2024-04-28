@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using MyStopWatch.Models;
+using System.ComponentModel;
 
 namespace MyStopWatch
 {
     public partial class MainForm : Form
     {
-        private MyStopWatchContext dbContext { get; set; }
-        private MainModel Model { get; } = new MainModel();
+        private MainModel Model { get; } = new ();
         public MainForm()
         {
 
@@ -15,12 +16,10 @@ namespace MyStopWatch
             StopWatchDisplay.Focus();
             SetButtonClickShortcut(this, Keys.Space, StartStopButton);
             SetButtonClickShortcut(this, Keys.Z, ResetButton);
-            WorkList.DataSource = Model.WorkTitles();
 
             MaximizeBox = false;
             MinimizeBox = false;
             MaximumSize = Size;
-            Draw();
         }
 
         private void TimerTrigger(object? sender, EventArgs e)
@@ -33,7 +32,7 @@ namespace MyStopWatch
             ResetButton.Enabled = Model.CanReset();
             StartStopButton.Text = Model.StartStopTitle();
             StopWatchDisplay.Text = Model.GetElapsed();
-            WorkList.SelectedIndex = Model.CurrentWork;
+            WorkList.SelectedValue = Model.CurrentWork;
         }
 
         private void StartButton_Click(object sender, EventArgs e)
@@ -66,24 +65,25 @@ namespace MyStopWatch
             {
                 return;
             }
-            Model.SelectWork(comboBox.SelectedIndex);
+            if (comboBox.SelectedValue == null)
+            {
+                return;
+            }
+            Model.SelectWork((int)comboBox.SelectedValue);
             Draw();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            dbContext = new MyStopWatchContext();
-#if DEBUG
-            dbContext.Database.EnsureDeleted();
-#endif
-            dbContext.Database.Migrate();
-            var item = dbContext.Works.FirstOrDefault();
-            if (item == null)
-            {
-                dbContext.Works.Add(new Work { Title = "test" });
-                dbContext.SaveChanges();
-            }
+            workListBindingSource.DataSource = Model.Works;
+            Draw();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            Model.Dispose();
         }
 
         //https://sabine.hatenablog.com/entry/2012/07/24/001113
