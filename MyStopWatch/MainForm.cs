@@ -5,12 +5,13 @@ namespace WinFormsApp1
         private MainModel Model { get; } = new MainModel();
         public MainForm()
         {
-            
+
             InitializeComponent();
             Model.SetTimerEvent(TimerTrigger);
             StopWatchDisplay.Focus();
             SetButtonClickShortcut(this, Keys.Space, StartStopButton);
             SetButtonClickShortcut(this, Keys.Z, ResetButton);
+            WorkList.DataSource = Model.WorkTitles();
 
             MaximizeBox = false;
             MinimizeBox = false;
@@ -27,30 +28,33 @@ namespace WinFormsApp1
         {
             StartStopButton.Enabled = Model.CanStart() || Model.CanStop();
             ResetButton.Enabled = Model.CanReset();
-            StartStopButton.Text = Model.CanStart() ? Model.StartTitle() : Model.StopTitle();
+            StartStopButton.Text = Model.StartStopTitle();
             StopWatchDisplay.Text = Model.GetElapsed();
+            WorkList.SelectedIndex = Model.CurrentWork;
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
             ActiveControl = null;
             var button = sender as Button;
-            if(button != null && button.Enabled)
+            if (button == null || !button.Enabled)
             {
-                Model.ToggleStartStop();
-                Draw();
+                return;
             }
+            Model.ToggleStartStop();
+            Draw();
         }
 
         private void ResetButton_Click(object sender, EventArgs e)
         {
             ActiveControl = null;
             var button = sender as Button;
-            if (button != null && button.Enabled)
+            if (button == null || !button.Enabled)
             {
-                Model.Reset();
-                Draw();
+                return;
             }
+            Model.Reset();
+            Draw();
         }
 
         //https://sabine.hatenablog.com/entry/2012/07/24/001113
@@ -88,5 +92,15 @@ namespace WinFormsApp1
             };
         }
 
+        private void WorkList_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if (comboBox == null)
+            {
+                return;
+            }
+            Model.SelectWork(comboBox.SelectedIndex);
+            Draw();
+        }
     }
 }

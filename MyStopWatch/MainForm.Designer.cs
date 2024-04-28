@@ -31,6 +31,7 @@
             StopWatchDisplay = new Label();
             StartStopButton = new Button();
             ResetButton = new Button();
+            WorkList = new ComboBox();
             SuspendLayout();
             // 
             // StopWatchDisplay
@@ -66,11 +67,23 @@
             ResetButton.UseVisualStyleBackColor = true;
             ResetButton.Click += ResetButton_Click;
             // 
+            // WorkList
+            // 
+            WorkList.DropDownStyle = ComboBoxStyle.DropDownList;
+            WorkList.Font = new Font("Yu Gothic UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 128);
+            WorkList.FormattingEnabled = true;
+            WorkList.Location = new Point(163, 140);
+            WorkList.Name = "WorkList";
+            WorkList.Size = new Size(248, 38);
+            WorkList.TabIndex = 3;
+            WorkList.SelectionChangeCommitted += WorkList_SelectionChangeCommitted;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(588, 224);
+            Controls.Add(WorkList);
             Controls.Add(ResetButton);
             Controls.Add(StartStopButton);
             Controls.Add(StopWatchDisplay);
@@ -85,5 +98,6 @@
         private Label StopWatchDisplay;
         private Button StartStopButton;
         private Button ResetButton;
+        private ComboBox WorkList;
     }
 }

@@ -5,85 +5,96 @@ namespace WinFormsApp1
 {
     internal class MainModel
     {
-        internal State state { get; private set; } = State.Initial;
-        private Stopwatch stopwatch { get; } = new Stopwatch();
-        private Timer timer { get; } = new Timer { Interval = 10 };
+        internal State State { get; private set; } = State.Initial;
+        private Stopwatch Stopwatch { get; } = new Stopwatch();
+        private Timer Timer { get; } = new Timer { Interval = 10 };
 
+        private List<string> Works { get; set; } = Enumerable.Empty<string>().ToList();
+        internal IList<string> WorkTitles() => Works;
+        internal int CurrentWork { get; private set; } = -1;
+        internal void SetTimerEvent(EventHandler timerTrigger) => Timer.Tick += timerTrigger;
+
+        internal int InitialIndex() => Works.FindIndex(x => x == string.Empty);
+
+        internal MainModel()
+        {
+            Works = new List<string> { "たしざん1", "ひきざん2", "たしざん3", "ひきざん4" };
+            CurrentWork = InitialIndex();
+        }
+        #region EventHandling
         internal void ToggleStartStop()
         {
-            switch (state) {
+            switch (State)
+            {
                 case State.Running:
-                    state = State.Stop;
-                    stopwatch.Stop();
-                    timer.Stop();
+                    State = State.Stop;
+                    Stopwatch.Stop();
+                    Timer.Stop();
                     return;
                 case State.Stop:
                 case State.Initial:
-                    stopwatch.Start();
-                    timer.Start();
-                    state = State.Running;
+                    Stopwatch.Start();
+                    Timer.Start();
+                    State = State.Running;
                     return;
                 default:
-                    throw new InvalidDataException($"Unexpected State {state}");
+                    throw new InvalidDataException($"Unexpected State {State}");
             }
         }
         internal void Reset()
         {
-            switch (state)
+            CurrentWork = InitialIndex();
+            switch (State)
             {
                 case State.Running:
                     throw new InvalidOperationException("Still Running");
                 case State.Stop:
-                    state = State.Initial;
-                    stopwatch.Reset();
+                    State = State.Initial;
+                    Stopwatch.Reset();
                     return;
                 case State.Initial:
                     throw new InvalidOperationException("No afford to reset");
                 default:
-                    throw new InvalidDataException($"Unexpected State {state}");
+                    throw new InvalidDataException($"Unexpected State {State}");
             }
         }
-
-        internal string GetElapsed() => stopwatch.Elapsed.ToHumanReadable();
-
-        internal void SetTimerEvent(EventHandler timerTrigger) =>
-            timer.Tick += timerTrigger;
-
-        internal bool CanStart() => state switch
+        internal void SelectWork(int selectedIndex)
         {
-            State.Initial => true,
+            CurrentWork = selectedIndex;
+        }
+        #endregion
+
+        #region UI effecting
+        internal string GetElapsed() => Stopwatch.Elapsed.ToHumanReadable();
+        internal bool CanStart() => State switch
+        {
+            State.Initial => true && CurrentWork != -1 && !string.IsNullOrWhiteSpace(Works[CurrentWork]),
             State.Running => false,
             State.Stop => true,
-            _ => throw new ArgumentOutOfRangeException(nameof(state))
+            _ => throw new ArgumentOutOfRangeException(nameof(State))
         };
-        internal bool CanStop() => state switch
+        internal bool CanStop() => State switch
         {
             State.Initial => false,
             State.Running => true,
             State.Stop => false,
-            _ => throw new ArgumentOutOfRangeException(nameof(state))
+            _ => throw new ArgumentOutOfRangeException(nameof(State))
         };
-        internal bool CanReset() => state switch
+        internal bool CanReset() => State switch
         {
             State.Initial => false,
             State.Running => false,
             State.Stop => true,
-            _ => throw new ArgumentOutOfRangeException(nameof(state))
+            _ => throw new ArgumentOutOfRangeException(nameof(State))
         };
-        internal string StartTitle() => state switch
+        internal string StartStopTitle() => State switch
         {
             State.Initial => "はじめる",
-            State.Running => string.Empty,
-            State.Stop => "はじめる",
-            _ => throw new ArgumentOutOfRangeException(nameof(state))
-        };
-        internal string StopTitle() => state switch
-        {
-            State.Initial => string.Empty,
             State.Running => "とまって",
-            State.Stop => string.Empty,
-            _ => throw new ArgumentOutOfRangeException(nameof(state))
+            State.Stop => "はじめる",
+            _ => throw new ArgumentOutOfRangeException(nameof(State))
         };
+        #endregion
 
     }
     internal enum State
