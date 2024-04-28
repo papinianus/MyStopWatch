@@ -28,13 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             StopWatchDisplay = new Label();
             StartStopButton = new Button();
             ResetButton = new Button();
             WorkList = new ComboBox();
+            workListBindingSource = new BindingSource(components);
             TabContainer = new TabControl();
             StopWatchPage = new TabPage();
             HistoryPage = new TabPage();
+            ((System.ComponentModel.ISupportInitialize)workListBindingSource).BeginInit();
             TabContainer.SuspendLayout();
             StopWatchPage.SuspendLayout();
             SuspendLayout();
@@ -74,6 +77,8 @@
             // 
             // WorkList
             // 
+            WorkList.DataSource = workListBindingSource;
+            WorkList.DisplayMember = "Title";
             WorkList.DropDownStyle = ComboBoxStyle.DropDownList;
             WorkList.Font = new Font("Yu Gothic UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 128);
             WorkList.FormattingEnabled = true;
@@ -81,7 +86,12 @@
             WorkList.Name = "WorkList";
             WorkList.Size = new Size(248, 38);
             WorkList.TabIndex = 3;
+            WorkList.ValueMember = "Id";
             WorkList.SelectionChangeCommitted += WorkList_SelectionChangeCommitted;
+            // 
+            // workListBindingSource
+            // 
+            workListBindingSource.DataSource = typeof(Models.Work);
             // 
             // TabContainer
             // 
@@ -127,6 +137,7 @@
             Controls.Add(TabContainer);
             Name = "MainForm";
             Text = "すとっぷうぉっち";
+            ((System.ComponentModel.ISupportInitialize)workListBindingSource).EndInit();
             TabContainer.ResumeLayout(false);
             StopWatchPage.ResumeLayout(false);
             StopWatchPage.PerformLayout();
@@ -142,5 +153,6 @@
         private TabControl TabContainer;
         private TabPage StopWatchPage;
         private TabPage HistoryPage;
+        private BindingSource workListBindingSource;
     }
 }
