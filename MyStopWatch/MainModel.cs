@@ -1,10 +1,4 @@
-﻿using Microsoft.VisualBasic.Devices;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WinFormsApp1
@@ -13,7 +7,7 @@ namespace WinFormsApp1
     {
         internal State state { get; private set; } = State.Initial;
         private Stopwatch stopwatch { get; } = new Stopwatch();
-        private Timer timer { get; } = new Timer {Interval = 10 };
+        private Timer timer { get; } = new Timer { Interval = 10 };
 
         internal void ToggleStartStop()
         {
@@ -52,8 +46,45 @@ namespace WinFormsApp1
 
         internal string GetElapsed() => stopwatch.Elapsed.ToHumanReadable();
 
-        internal void SetTimerEvent(EventHandler timerTrigger) => 
+        internal void SetTimerEvent(EventHandler timerTrigger) =>
             timer.Tick += timerTrigger;
+
+        internal bool CanStart() => state switch
+        {
+            State.Initial => true,
+            State.Running => false,
+            State.Stop => true,
+            _ => throw new ArgumentOutOfRangeException(nameof(state))
+        };
+        internal bool CanStop() => state switch
+        {
+            State.Initial => false,
+            State.Running => true,
+            State.Stop => false,
+            _ => throw new ArgumentOutOfRangeException(nameof(state))
+        };
+        internal bool CanReset() => state switch
+        {
+            State.Initial => false,
+            State.Running => false,
+            State.Stop => true,
+            _ => throw new ArgumentOutOfRangeException(nameof(state))
+        };
+        internal string StartTitle() => state switch
+        {
+            State.Initial => "はじめる",
+            State.Running => string.Empty,
+            State.Stop => "はじめる",
+            _ => throw new ArgumentOutOfRangeException(nameof(state))
+        };
+        internal string StopTitle() => state switch
+        {
+            State.Initial => string.Empty,
+            State.Running => "とまって",
+            State.Stop => string.Empty,
+            _ => throw new ArgumentOutOfRangeException(nameof(state))
+        };
+
     }
     internal enum State
     {

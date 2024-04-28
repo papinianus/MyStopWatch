@@ -1,13 +1,7 @@
-using System.Diagnostics;
-using System.Windows.Forms;
-using Timer = System.Windows.Forms.Timer;
-
 namespace WinFormsApp1
 {
     public partial class MainForm : Form
     {
-        private Stopwatch PrimeClock { get; } = new Stopwatch();
-        private Timer TimeDriven { get; } = new Timer { Interval = 10 };
         private MainModel Model { get; } = new MainModel();
         public MainForm()
         {
@@ -31,24 +25,9 @@ namespace WinFormsApp1
         }
         private void Draw()
         {
-            switch (Model.state)
-            {
-                case State.Initial:
-                    StartStopButton.Enabled = true;
-                    ResetButton.Enabled = false;
-                    StartStopButton.Text = "‚Í‚¶‚ß‚é";
-                    break;
-                case State.Running:
-                    StartStopButton.Enabled = true;
-                    ResetButton.Enabled = false;
-                    StartStopButton.Text = "‚Æ‚Ü‚Á‚Ä";
-                    break;
-                case State.Stop:
-                    StartStopButton.Enabled = true;
-                    ResetButton.Enabled = true;
-                    StartStopButton.Text = "‚Í‚¶‚ß‚é";
-                    break;
-            }
+            StartStopButton.Enabled = Model.CanStart() || Model.CanStop();
+            ResetButton.Enabled = Model.CanReset();
+            StartStopButton.Text = Model.CanStart() ? Model.StartTitle() : Model.StopTitle();
             StopWatchDisplay.Text = Model.GetElapsed();
         }
 
