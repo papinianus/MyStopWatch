@@ -18,7 +18,6 @@ namespace WinFormsApp1
 
         internal MainModel()
         {
-            Works = new List<string> { "たしざん1", "ひきざん2", "たしざん3", "ひきざん4" };
             CurrentWork = InitialIndex();
         }
         #region EventHandling
